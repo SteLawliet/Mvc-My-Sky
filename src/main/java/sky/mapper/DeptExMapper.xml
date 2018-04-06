@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sky.mapper.DeptExMapper">
+    <resultMap id="DeptExMap" type="sky.pojo.DeptEx">
+        <id property="deptno" column="deptno"/>
+        <result property="dname" column="dname"/>
+        <result property="loc" column="loc"/>
+        <collection property="empList" ofType="sky.pojo.Emp">
+            <id property="empno" column="empno"/>
+            <result property="ename" column="ename"/>
+            <result property="job" column="job"/>
+            <result property="deptno" column="deptno"/>
+            <result property="sal" column="sal"/>
+        </collection>
+    </resultMap>
+    <select id="selectDeptEx" resultMap="DeptExMap">
+        SELECT
+         exam.dept.deptno,
+         exam.dept.dname,
+         exam.dept.loc,
+         exam.emp.*
+         FROM exam.emp,exam.dept
+         WHERE dept.deptno = emp.deptno
+    </select>
+    <select id="selectDeptExByNo" parameterType="java.lang.Integer" resultMap="DeptExMap">
+        SELECT
+        exam.dept.deptno,
+        exam.dept.dname,
+        exam.dept.loc,
+        exam.emp.*
+        FROM exam.emp,exam.dept
+        WHERE dept.deptno = emp.deptno AND emp.deptno =#{VALUE }
+    </select>
+</mapper>

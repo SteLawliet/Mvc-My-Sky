@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+       xmlns:context="http://www.springframework.org/schema/context"
+
+       xmlns:aop="http://www.springframework.org/schema/aop"
+
+       xmlns:tx="http://www.springframework.org/schema/tx"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+
+http://www.springframework.org/schema/beans/spring-beans.xsd
+
+http://www.springframework.org/schema/context
+
+http://www.springframework.org/schema/context/spring-context.xsd
+
+http://www.springframework.org/schema/aop
+
+http://www.springframework.org/schema/aop/spring-aop.xsd
+
+http://www.springframework.org/schema/tx
+
+http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+<bean name="user" class="sky.pojo.User">
+    <property name="age" value="12"/>
+    <property name="likes">
+        <array>
+            <value>"wqwqw"</value>
+            <value>"apple0"</value>
+            <value>"summ"</value>
+        </array>
+    </property>
+</bean>
+    <!--加载数据库连接的配置文件-->
+    <context:property-placeholder location="classpath:spring/c3p0.properties"/>
+
+    <!--注入c3p0连接池-->
+    <bean name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${jdbc.driver}"/>
+        <property name="jdbcUrl" value="${jdbc.url}"/>
+        <property name="user" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+    <!--mapper-->
+    <bean name="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--注入数据库连接池-->
+        <property name="dataSource" ref="dataSource"/>
+        <!--加载mybatis配置-->
+
+    </bean>
+
+
+
+
+
+
+    <context:component-scan base-package="sky"/>
+    <context:property-placeholder location="classpath:spring/c3p0.properties"/>
+
+    <aop:aspectj-autoproxy />
+    <aop:config>
+        <aop:pointcut id="pot.login" expression="execution(* sky.Pot.login(..))"/>
+        <aop:pointcut id="pot.logout" expression="execution(void sky.Pot.lgout())"/>
+        <aop:aspect ref="advice" >
+            <aop:around method="around" pointcut-ref="pot.login" />
+        </aop:aspect>
+        <aop:aspect ref="advice">
+            <aop:after-returning method="after" pointcut-ref="pot.logout"/>
+        </aop:aspect>
+    </aop:config>
+</beans>
